@@ -111,6 +111,7 @@ public class UserRepositoryTest {
                 .email("john.doe@does.org")
                 .build();
         var savedUser = userRepository.save(user);
+
         user = User.builder()
                 .id(savedUser.getId())
                 .firstName("Mary")
@@ -118,5 +119,36 @@ public class UserRepositoryTest {
                 .email("mary.doe@does.org")
                 .build();
         var updatedUser = userRepository.save(user);
+
+        assertThat(updatedUser.getId()).isEqualTo(user.getId());
+        assertThat(updatedUser.getFirstName()).isEqualTo(user.getFirstName());
+        assertThat(updatedUser.getLastName()).isEqualTo(user.getLastName());
+        assertThat(updatedUser.getEmail()).isEqualTo(user.getEmail());
+    }
+
+    @Test
+    @DisplayName("UserRepository finds existing user by email")
+    void findExistingUserByEmail() {
+        var user = User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@does.org")
+                .build();
+        var savedUser = userRepository.save(user);
+
+        var result = userRepository.findByEmail("john.doe@does.org");
+
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getFirstName()).isEqualTo(user.getFirstName());
+        assertThat(result.get().getLastName()).isEqualTo(user.getLastName());
+        assertThat(result.get().getEmail()).isEqualTo(user.getEmail());
+    }
+
+    @Test
+    @DisplayName("UserRepository finds non existing user by email")
+    void findNonExistingUserByEmail() {
+        var result = userRepository.findByEmail("john.doe@does.org");
+
+        assertThat(result.isEmpty()).isTrue();
     }
 }
