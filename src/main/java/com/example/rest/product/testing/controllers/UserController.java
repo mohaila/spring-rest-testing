@@ -20,7 +20,7 @@ public class UserController {
         this.addUserService = addUserService;
     }
 
-    @PostMapping
+    @PostMapping(produces = "application/json")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@RequestBody CreateUser createUser) {
